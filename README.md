@@ -13,7 +13,7 @@ After cloning this repository and building the library, you will have two import
 
 `build/librenderer.a` — the static library
 
-To use the renderer in your own project, place these files in the following structure:
+To use the renderer, place these files in the following structure:
 
 ```
 your-project/
@@ -50,8 +50,6 @@ gcc -Iinclude src/your_code.c \
     `sdl2-config --cflags --libs` -fopenmp \
     -o your_program
 ```
-
-This setup gives you full access to the renderer’s API and ensures the library links correctly.
 
 ## Quick Start Example
 
