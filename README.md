@@ -7,7 +7,7 @@ Every .c file must be included in main.c. Every .c file must include renderer.h 
 ## Including
 
 Using the Renderer Library in Your Project
-After cloning this repository and building the library, you will have two important files:
+After cloning this repository and building the library using the makefile, you will have these two files:
 
 `include/renderer.h` — the public header
 
