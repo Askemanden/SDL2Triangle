@@ -58,7 +58,7 @@ Below is a minimal example showing how to use the renderer library in your own p
 ### File: `src/main.c`
 
 ```c
-#include "renderer.h"
+#include "../../include/renderer.h"
 #include <stdint.h>
 
 // Simple callback: returns a color based on pixel position
@@ -72,9 +72,9 @@ static uint32_t gradient(int x, int y)
 
 int main(int argc, char *argv[])
 {
-    SDLContext ctx;
+    SDLContext ctx = {0};
 
-    if (!init_sdl(&ctx))
+    if (init_sdl(&ctx))
         return 1;
 
     // Fill the entire framebuffer using the callback
