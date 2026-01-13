@@ -30,22 +30,27 @@ void shutdown_sdl(SDLContext *ctx);
 /// @brief Draws to the buffer using callback as a function of pixel coordinates for pixel color values
 /// @param callback Callback to create pixel color values based on x and y coordinate.
 /// Must be a pure function to ensure multi threaded drawing will work
-void draw(uint32_t (*callback)(int x, int y));
+void draw(DrawJob job);
 
 /// @brief Limited area parallel buffer fill using a callback.
 /// Recommend using draw_multiple_bounded with a custom queue or enqueue_draw_job
 /// with process_queue
 /// @param callback function to be called whose return is the value for every pixel in the area, given the pixels x and y coordinate as input
 /// @param area bounding area
-void draw_bounded(uint32_t (*callback)(int x, int y), Recti area);
+void draw_bounded(DrawJob job);
 
-/// @brief Not thread safe pixel drawing function
+/// @brief Not thread safe pixel drawing function. Does not prevent drawing to the same pixel from multiple threads.
+/// Significiantly faster than its safe counterpart, aswell as very usefull in drawing in parallel, '
+/// since it does not lock the mutex, if one ensures no pixels are drawn to twice
 /// @param x pixel x-coordinate
 /// @param y pixel y-coordinate
 /// @param color pixel color
 void draw_pixel(int x, int y, uint32_t color);
 
-/// @brief Thread safe pixel drawing function
+/// @brief Safe pixel drawing function. Locks the pixel mutex every time,
+/// preventing multiple attempts at drawing to the same pixel happening at the same time in different threads.
+/// Significantly slower than `draw_pixel`, and not particularly useful for parallel operation,
+/// due to preventing parallel access to the mutex
 /// @param x pixel x-coordinate
 /// @param y pixel y-coordinate
 /// @param color pixel color

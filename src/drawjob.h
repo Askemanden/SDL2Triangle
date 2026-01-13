@@ -28,7 +28,8 @@ typedef struct Rectf
 typedef struct DrawJob
 {
     Recti area;
-    uint32_t (*callback)(int x, int y);
+    uint32_t (*callback)(int x, int y, void *userdata);
+    void *userdata;
 } DrawJob;
 
 Recti Rectf_to_i(Rectf rectf);

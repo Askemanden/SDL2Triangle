@@ -77,16 +77,22 @@ void update(SDLContext *ctx)
     SDL_RenderPresent(ctx->renderer);
 }
 
-void draw(uint32_t (*callback)(int x, int y))
+void draw(DrawJob job)
 {
+    uint32_t (*callback)(int,int,void*) = job.callback;
+    void *userdata = job.userdata;
+
 #pragma omp parallel for collapse(2)
     for (int y = 0; y < HEIGHT; y++)
         for (int x = 0; x < WIDTH; x++)
-            draw_pixel(x, y, callback(x, y));
+            draw_pixel(x, y, callback(x, y, userdata));
 }
 
-void draw_bounded(uint32_t (*callback)(int x, int y), Recti area)
+void draw_bounded(DrawJob job)
 {
+    uint32_t (*callback)(int x, int y, void*) = job.callback;
+    Recti area = job.area;
+    void *userdata = job.userdata;
     int x0 = area.top_left.x;
     int y0 = area.top_left.y;
     int x1 = area.bottom_right.x;
@@ -107,7 +113,7 @@ void draw_bounded(uint32_t (*callback)(int x, int y), Recti area)
     {
         for (int x = x0; x < x1; x++)
         {
-            uint32_t color = callback(x, y);
+            uint32_t color = callback(x, y, userdata);
             draw_pixel(x, y, color);
         }
     }
@@ -119,7 +125,7 @@ void draw_multiple_bounded(DrawJob *jobs, int job_count)
     for (int j = 0; j < job_count; j++)
     {
         Recti area = jobs[j].area;
-        uint32_t (*callback)(int, int) = jobs[j].callback;
+        uint32_t (*callback)(int, int, void*) = jobs[j].callback;
 
         int x0 = area.top_left.x;
         int y0 = area.top_left.y;
@@ -140,7 +146,7 @@ void draw_multiple_bounded(DrawJob *jobs, int job_count)
         {
             for (int x = x0; x < x1; x++)
             {
-                uint32_t color = callback(x, y);
+                uint32_t color = callback(x, y, jobs[j].userdata);
                 buffer[y * WIDTH + x] = color; // safe unless overlapping
             }
         }
@@ -152,7 +158,8 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
     for (int j = 0; j < job_count; j++)
     {
         Recti area = jobs[j].area;
-        uint32_t (*callback)(int, int) = jobs[j].callback;
+        uint32_t (*callback)(int, int, void*) = jobs[j].callback;
+        void *userdata = jobs[j].userdata;
 
         int x0 = area.top_left.x;
         int y0 = area.top_left.y;
@@ -174,7 +181,7 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
         {
             for (int x = x0; x < x1; x++)
             {
-                buffer[y * WIDTH + x] = callback(x, y);
+                buffer[y * WIDTH + x] = callback(x, y, userdata);
             }
         }
     }

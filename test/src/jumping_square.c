@@ -11,7 +11,7 @@ static uint32_t rgb(uint8_t r, uint8_t g, uint8_t b)
 /*
  * Callback used by draw() to fill entire screen with a gradient.
  */
-static uint32_t gradient_callback(int x, int y)
+static uint32_t gradient_callback(int x, int y, void *_)
 {
     float fx = (float)x / (float)WIDTH;
     float fy = (float)y / (float)HEIGHT;
@@ -26,7 +26,7 @@ static uint32_t gradient_callback(int x, int y)
 /*
  * Callback for a solid color, used in bounded draws and jobs.
  */
-static uint32_t solid_blue(int x, int y)
+static uint32_t solid_blue(int x, int y, void *_)
 {
     (void)x;
     (void)y;
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         return 1;
 
     Rectf square = {.top_left = {.x = 10, .y = 10}, .bottom_right = {.x = 100, .y = 100}};
-    double velocity[] = {50, 50};
+    double velocity[] = {120, 70};
 
     DrawJob square_job = {.area = Rectf_to_i(square), .callback = solid_blue};
 
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         square_job.area = Rectf_to_i(square);
 
         // Draw background
-        draw(gradient_callback);
+        draw((DrawJob){.callback = gradient_callback});
 
         // Draw square
         enqueue_draw_job(square_job);
