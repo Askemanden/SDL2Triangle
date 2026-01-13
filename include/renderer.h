@@ -37,7 +37,7 @@ void draw(uint32_t (*callback)(int x, int y));
 /// with process_queue
 /// @param callback function to be called whose return is the value for every pixel in the area, given the pixels x and y coordinate as input
 /// @param area bounding area
-void draw_bounded(uint32_t (*callback)(int x, int y), Rect area);
+void draw_bounded(uint32_t (*callback)(int x, int y), Recti area);
 
 /// @brief Not thread safe pixel drawing function
 /// @param x pixel x-coordinate
@@ -70,8 +70,8 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count);
 /// @param job draw job to add to the queue
 void enqueue_draw_job(DrawJob job);
 
-/// @brief calls draw_multiple_bounded on the inbuilt draw_queue
+/// @brief calls draw_multiple_bounded on the inbuilt draw_queue. No guarantee this will work if drawjob areas overlap
 void process_queue();
 
-/// @brief calls draw_multiple_bounded_safe on the inbuilt draw_queue
+/// @brief calls draw_multiple_bounded_safe on the inbuilt draw_queue. Guaranteed to work with overlapping drawjob areas
 void process_queue_safe();

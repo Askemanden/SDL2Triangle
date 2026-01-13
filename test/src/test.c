@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     wait_ms(1000);
 
     // 3) Test draw_bounded(): draw a red rectangle in the top-left
-    Rect rect1 = {
+    Recti rect1 = {
         .top_left = {50, 50},
         .bottom_right = {300, 200}};
 
@@ -124,13 +124,13 @@ int main(int argc, char **argv)
     // 4) Test draw_multiple_bounded() with non-overlapping jobs
     DrawJob jobs_non_overlap[3];
 
-    Rect r_left = {
+    Recti r_left = {
         .top_left = {0, HEIGHT / 2},
         .bottom_right = {WIDTH / 3, HEIGHT}};
-    Rect r_mid = {
+    Recti r_mid = {
         .top_left = {WIDTH / 3, HEIGHT / 2},
         .bottom_right = {2 * WIDTH / 3, HEIGHT}};
-    Rect r_right = {
+    Recti r_right = {
         .top_left = {2 * WIDTH / 3, HEIGHT / 2},
         .bottom_right = {WIDTH, HEIGHT}};
 
@@ -151,13 +151,13 @@ int main(int argc, char **argv)
     // 5) Test draw_multiple_bounded_safe() with overlapping jobs
     DrawJob jobs_overlap[3];
 
-    Rect o1 = {
+    Recti o1 = {
         .top_left = {100, 100},
         .bottom_right = {500, 400}};
-    Rect o2 = {
+    Recti o2 = {
         .top_left = {300, 200},
         .bottom_right = {800, 500}};
-    Rect o3 = {
+    Recti o3 = {
         .top_left = {400, 150},
         .bottom_right = {900, 550}};
 

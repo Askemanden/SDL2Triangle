@@ -1,6 +1,6 @@
 #include "../include/renderer.h"
-
 #include "text.c"
+#include "drawjob.c"
 
 static uint32_t buffer[WIDTH * HEIGHT];
 static SDL_mutex *pixel_mutex = NULL;
@@ -85,7 +85,7 @@ void draw(uint32_t (*callback)(int x, int y))
             draw_pixel(x, y, callback(x, y));
 }
 
-void draw_bounded(uint32_t (*callback)(int x, int y), Rect area)
+void draw_bounded(uint32_t (*callback)(int x, int y), Recti area)
 {
     int x0 = area.top_left.x;
     int y0 = area.top_left.y;
@@ -118,7 +118,7 @@ void draw_multiple_bounded(DrawJob *jobs, int job_count)
 #pragma omp parallel for
     for (int j = 0; j < job_count; j++)
     {
-        Rect area = jobs[j].area;
+        Recti area = jobs[j].area;
         uint32_t (*callback)(int, int) = jobs[j].callback;
 
         int x0 = area.top_left.x;
@@ -151,7 +151,7 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
 {
     for (int j = 0; j < job_count; j++)
     {
-        Rect area = jobs[j].area;
+        Recti area = jobs[j].area;
         uint32_t (*callback)(int, int) = jobs[j].callback;
 
         int x0 = area.top_left.x;
@@ -159,10 +159,14 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
         int x1 = area.bottom_right.x;
         int y1 = area.bottom_right.y;
 
-        if (x0 < 0) x0 = 0;
-        if (y0 < 0) y0 = 0;
-        if (x1 > WIDTH) x1 = WIDTH;
-        if (y1 > HEIGHT) y1 = HEIGHT;
+        if (x0 < 0)
+            x0 = 0;
+        if (y0 < 0)
+            y0 = 0;
+        if (x1 > WIDTH)
+            x1 = WIDTH;
+        if (y1 > HEIGHT)
+            y1 = HEIGHT;
 
         // Parallelize the pixel loop, not the job loop
 #pragma omp parallel for collapse(2)
@@ -175,7 +179,6 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
         }
     }
 }
-
 
 void enqueue_draw_job(DrawJob job)
 {
@@ -191,9 +194,11 @@ void enqueue_draw_job(DrawJob job)
 void process_queue()
 {
     draw_multiple_bounded(draw_queue, draw_queue_length);
+    draw_queue_length = 0;
 }
 
 void process_queue_safe()
 {
     draw_multiple_bounded_safe(draw_queue, draw_queue_length);
+    draw_queue_length = 0;
 }
