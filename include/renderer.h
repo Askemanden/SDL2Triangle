@@ -7,6 +7,7 @@
 
 #include "../src/text.h"
 #include "../src/drawjob.h"
+#include "../src/drawjob_modifier.h"
 
 #define WIDTH 1000
 #define HEIGHT 700

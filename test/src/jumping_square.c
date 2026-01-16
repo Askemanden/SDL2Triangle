@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         return 1;
 
     Rectf square = {.top_left = {.x = 10, .y = 10}, .bottom_right = {.x = 100, .y = 100}};
-    double velocity[] = {120, 70};
+    double velocity[] = {120, 200};
 
     DrawJob square_job = {.area = Rectf_to_i(square), .callback = solid_blue};
 

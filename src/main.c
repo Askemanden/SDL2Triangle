@@ -1,6 +1,7 @@
 #include "../include/renderer.h"
 #include "text.c"
 #include "drawjob.c"
+#include "drawjob_modifier.c"
 
 static uint32_t buffer[WIDTH * HEIGHT];
 static SDL_mutex *pixel_mutex = NULL;
@@ -79,7 +80,7 @@ void update(SDLContext *ctx)
 
 void draw(DrawJob job)
 {
-    uint32_t (*callback)(int,int,void*) = job.callback;
+    uint32_t (*callback)(int, int, void *) = job.callback;
     void *userdata = job.userdata;
 
 #pragma omp parallel for collapse(2)
@@ -90,7 +91,7 @@ void draw(DrawJob job)
 
 void draw_bounded(DrawJob job)
 {
-    uint32_t (*callback)(int x, int y, void*) = job.callback;
+    uint32_t (*callback)(int x, int y, void *) = job.callback;
     Recti area = job.area;
     void *userdata = job.userdata;
     int x0 = area.top_left.x;
@@ -125,7 +126,7 @@ void draw_multiple_bounded(DrawJob *jobs, int job_count)
     for (int j = 0; j < job_count; j++)
     {
         Recti area = jobs[j].area;
-        uint32_t (*callback)(int, int, void*) = jobs[j].callback;
+        uint32_t (*callback)(int, int, void *) = jobs[j].callback;
 
         int x0 = area.top_left.x;
         int y0 = area.top_left.y;
@@ -158,7 +159,7 @@ void draw_multiple_bounded_safe(DrawJob *jobs, int job_count)
     for (int j = 0; j < job_count; j++)
     {
         Recti area = jobs[j].area;
-        uint32_t (*callback)(int, int, void*) = jobs[j].callback;
+        uint32_t (*callback)(int, int, void *) = jobs[j].callback;
         void *userdata = jobs[j].userdata;
 
         int x0 = area.top_left.x;
